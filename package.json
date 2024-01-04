@@ -1,0 +1,31 @@
+{
+  "name": "salon-hub-backend",
+  "version": "1.0.0",
+  "description": "An online booking salon store for queues is a digital platform that enables customers to schedule appointments and join queues for salon services through the internet.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "NODE_ENV=dev nodemon src/index.js",
+    "start:prod": "NODE_ENV=prod node src/index.js"
+  },
+  "keywords": [
+    "NodeJS",
+    "Express",
+    "PostgreSQL",
+    "API"
+  ],
+  "author": "Krishna Nayak",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.35.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
