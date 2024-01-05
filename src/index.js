@@ -49,6 +49,40 @@ app.post("/users", async (req, res) => {
   }
 });
 
+// Update user Data
+app.put("/users/:userId", async (req, res) => {
+  const { fullName, email, role } = req.body;
+  const { userId } = req.params;
+  try {
+    const userDetails = await User.findOne({ where: { userId } });
+    // console.log(fullName ? fullName : userDetails.fullName);
+    const user = await User.update(
+      {
+        fullName: fullName ? fullName : userDetails.fullName,
+        email: email ? email : userDetails.email,
+        role: role ? role : userDetails.role,
+      },
+      { where: { userId } }
+    );
+    return res.json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
+
+// Delete User details
+app.delete("/users/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.destroy({ where: { userId } });
+    return res.json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
+
 /* *********************************************************************************** */
 app.get("/", (req, res) => {
   res.send("Hello World");
