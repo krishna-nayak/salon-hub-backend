@@ -1,8 +1,8 @@
 module.exports = {
   development: {
-    username: process.env.USERNAME,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE_DEV,
+    username: "postgres",
+    password: "PostgreSQL",
+    database: "SalonDB",
     host: "127.0.0.1",
     dialect: "postgres",
   },
