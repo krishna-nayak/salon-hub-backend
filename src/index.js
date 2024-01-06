@@ -9,7 +9,7 @@ const { where } = require("sequelize");
 // const { User } = require("./db/models");
 
 dotenv.config();
-const PORT = process.env.SERVER_PORT || 8080;
+const PORT = process.env.SERVER_PORT || 3000;
 const app = express();
 
 app.use(cors({ origin: "*" }));
