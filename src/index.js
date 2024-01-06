@@ -1,5 +1,5 @@
 const express = require("express");
-const dotenv = require("dotenv");
+const dotenv = require("dotenv").config();
 const cors = require("cors");
 
 // import { sequelize } from "./db/models";
@@ -8,7 +8,6 @@ const { sequelize, User, Salon } = require("./db/models");
 const { where } = require("sequelize");
 // const { User } = require("./db/models");
 
-dotenv.config();
 const PORT = process.env.SERVER_PORT || 3000;
 const app = express();
 
