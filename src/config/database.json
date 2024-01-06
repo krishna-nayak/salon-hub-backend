@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "krishna",
-    "password": "krishna@123",
-    "database": "database_development",
+    "username": "postgres",
+    "password": "PostgreSQL",
+    "database": "SalonDB",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

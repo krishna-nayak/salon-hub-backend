@@ -3,19 +3,20 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 
 // import { sequelize } from "./db/models";
-const { sequelize, User } = require("./db/models");
+const { sequelize, User, Salon } = require("./db/models");
+
 const { where } = require("sequelize");
 // const { User } = require("./db/models");
 
 dotenv.config();
-const PORT = process.env.SERVER_PORT || 3000;
+const PORT = process.env.SERVER_PORT || 8080;
 const app = express();
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 /* *********************************************************************************** */
-
+// For Users
 // GET ALL USER
 app.get("/users", async (req, res) => {
   try {
@@ -82,7 +83,84 @@ app.delete("/users/:userId", async (req, res) => {
     return res.status(500).json(err);
   }
 });
+/* *********************************************************************************** */
+// For Salons
+// GET ALL USER
+app.get("/salon", async (req, res) => {
+  try {
+    const salon = await Salon.findAll();
+    return res.json(salon);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
 
+app.get("/salon/:salonid", async (req, res) => {
+  const { salonid } = req.params;
+  try {
+    const salon = await Salon.findOne({ where: { salonid } });
+    return res.json(salon);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
+
+// Add new salon (CREATE)
+app.post("/salon", async (req, res) => {
+  const { name, address, city, openinghourstart, closeingHour } = req.body;
+  try {
+    const salon = await Salon.create({
+      name,
+      address,
+      city,
+      openinghourstart,
+      closeingHour,
+    });
+    return res.json(salon);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
+
+// Update salon Data
+app.put("/salon/:salonid", async (req, res) => {
+  const { name, address, city, openinghourstart, closeingHour } = req.body;
+  const { salonid } = req.params;
+  try {
+    const salonDetails = await Salon.findOne({ where: { salonid } });
+    const salon = await Salon.update(
+      {
+        name: name ? name : salonDetails.name,
+        address: address ? address : salonDetails.address,
+        city: city ? city : salonDetails.city,
+        openinghourstart: openinghourstart
+          ? openinghourstart
+          : salonDetails.openinghourstart,
+        closeingHour: closeingHour ? closeingHour : salonDetails.closeingHour,
+      },
+      { where: { salonid } }
+    );
+    return res.json(salon);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
+
+// Delete Salon details
+app.delete("/salon/:salonid", async (req, res) => {
+  const { salonid } = req.params;
+  try {
+    const salon = await Salon.destroy({ where: { salonid } });
+    return res.json(salon);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
 /* *********************************************************************************** */
 app.get("/", (req, res) => {
   res.send("Hello World");
