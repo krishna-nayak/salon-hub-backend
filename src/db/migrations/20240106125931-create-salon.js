@@ -11,21 +11,27 @@ module.exports = {
       },
       salonid: {
         type: Sequelize.UUID,
+        allowNull: false,
       },
       name: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       address: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       city: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       openinghourstart: {
         type: Sequelize.DATE,
+        allowNull: false,
       },
       closeingHour: {
         type: Sequelize.DATE,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
