@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Salon.init(
     {
-      salonid: DataTypes.UUID,
+      salonid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
