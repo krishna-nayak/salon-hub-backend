@@ -13,9 +13,9 @@ var getSalons = async (req, res) => {
   }
 };
 var getSalon = async (req, res) => {
-  const { userId } = req.params;
+  const { salonid } = req.params;
   try {
-    const salon = await Salon.findOne({ where: { userId } });
+    const salon = await Salon.findOne({ where: { salonid } });
     return res.json(salon);
   } catch (err) {
     console.log(err);
