@@ -26,11 +26,11 @@ module.exports = {
         allowNull: false,
       },
       openinghourstart: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       closeingHour: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {
