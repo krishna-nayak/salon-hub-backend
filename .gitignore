@@ -3,7 +3,5 @@ dist
 
 
 *.env
-USERNAME=""
-PASSWORD=""
-DATABASE_DEV=""
+
  
