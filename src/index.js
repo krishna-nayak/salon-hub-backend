@@ -9,6 +9,13 @@ var salonCtrl = require("./controllers/salonController");
 const { sequelize } = require("./db/models");
 
 const { where } = require("sequelize");
+// const SalonService = require("./db/models/salonservice");
+// const Service = require("./db/models/service");
+// const service = require("./db/models/service");
+var db = require("./db/models");
+var Service = db.Service;
+var SalonService = db.salonService;
+var Salon = db.Salon;
 // const { User } = require("./db/models");
 
 const PORT = process.env.SERVER_PORT || 8080;
@@ -31,6 +38,51 @@ app.get("/salon/:salonid", salonCtrl.getSalon);
 app.post("/salon", salonCtrl.postSalons);
 app.put("/salon/:salonid", salonCtrl.putSalons);
 app.delete("/salon/:salonid", salonCtrl.deleteSalons);
+
+// GET SALON SERVICE
+app.get("/test", async (req, res) => {
+  try {
+    const services = await Service.findAll({});
+
+    return res.json({ services: services });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: err.message });
+  }
+});
+
+app.post("/salon/:SalonId/service/:ServiceId", async (req, res) => {
+  const { SalonId, ServiceId } = req.params;
+  const { price, description, duration } = req.body;
+
+  try {
+    // const salon = await Salon.findOne({ where: { salonId } });
+    // const service = await Service.findOne({ where: { serviceId } });
+    const salonService = await SalonService.create({
+      price,
+      description,
+      duration,
+      SalonId,
+      ServiceId,
+    });
+
+    return res.status(201).json(salonService);
+  } catch (err) {
+    // console.log(err);
+    console.log(err);
+    return res.status(500).json({ msg: err.message });
+  }
+});
+
+app.get("/salonService/:SalonId", async (req, res) => {
+  const { SalonId } = req.params;
+  try {
+    const result = await Salon.findAll({ include: Service });
+    return res.json(result);
+  } catch (err) {
+    return res.json({ msg: err.msg });
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World");

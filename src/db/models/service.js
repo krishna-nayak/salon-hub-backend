@@ -1,19 +1,28 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class service extends Model {
+  class Service extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({ Salon, salonService }) {
       // define association here
+      this.belongsToMany(Salon, {
+        through: salonService,
+        foreignKey: "ServiceId",
+      });
+      // this.hasMany(salonService);
+    }
+
+    toJSON() {
+      return { ...this.get(), id: undefined };
     }
   }
-  service.init(
+  Service.init(
     {
-      seriveId: {
+      serviceId: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
@@ -25,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       tableName: "services",
-      modelName: "service",
+      modelName: "Service",
     }
   );
-  return service;
+  return Service;
 };

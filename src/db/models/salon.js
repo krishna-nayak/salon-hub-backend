@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const salonservice = require("./salonservice");
 module.exports = (sequelize, DataTypes) => {
   class Salon extends Model {
     /**
@@ -7,13 +8,18 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({ salonService, Service }) {
       // define association here
+      this.belongsToMany(Service, {
+        through: salonService,
+        foreignKey: "SalonId",
+      });
+      // this.hasMany(salonService);
     }
   }
   Salon.init(
     {
-      salonid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
+      salonId: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -38,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "City must not be empty" },
         },
       },
-      openinghourstart: {
+      openingHourStart: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
