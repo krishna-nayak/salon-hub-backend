@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       openinghourstart: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notNull: { msg: "Timing must follow the timestamp standard" },
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       closeingHour: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notNull: { msg: "Timing must follow the timestamp standard" },
