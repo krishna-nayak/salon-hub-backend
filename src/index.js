@@ -1,22 +1,17 @@
 const express = require("express");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 const cors = require("cors");
 var bodyParser = require("body-parser");
 require("./db/models");
 var userCtrl = require("./controllers/userController");
 var salonCtrl = require("./controllers/salonController");
-// import { sequelize } from "./db/models";
+
 const { sequelize } = require("./db/models");
 
 const { where } = require("sequelize");
-// const SalonService = require("./db/models/salonservice");
-// const Service = require("./db/models/service");
-// const service = require("./db/models/service");
 var db = require("./db/models");
 var Service = db.Service;
-var SalonService = db.salonService;
 var Salon = db.Salon;
-// const { User } = require("./db/models");
 
 const PORT = process.env.SERVER_PORT || 8080;
 const app = express();
@@ -42,31 +37,30 @@ app.delete("/salon/:salonid", salonCtrl.deleteSalons);
 // GET SALON SERVICE
 app.get("/test", async (req, res) => {
   try {
-    const services = await Service.findAll({});
+    const services = await Service.findAll({ include: Salon });
 
-    return res.json({ services: services });
+    return res.json(services);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ msg: err.message });
   }
 });
 
-app.post("/salon/:SalonId/service/:ServiceId", async (req, res) => {
-  const { SalonId, ServiceId } = req.params;
+app.post("/salon/:salonId/service/:serviceId", async (req, res) => {
+  const { salonId, serviceId } = req.params;
   const { price, description, duration } = req.body;
 
   try {
-    // const salon = await Salon.findOne({ where: { salonId } });
-    // const service = await Service.findOne({ where: { serviceId } });
-    const salonService = await SalonService.create({
-      price,
-      description,
-      duration,
-      SalonId,
-      ServiceId,
+    const salon = await Salon.findOne({ where: { salonId } });
+    const service = await Service.findOne({ where: { serviceId } });
+
+    await salon.addService(service, {
+      through: { price, description, duration },
     });
 
-    return res.status(201).json(salonService);
+    const result = await Salon.findAll({ include: Service });
+
+    return res.status(201).json(result);
   } catch (err) {
     // console.log(err);
     console.log(err);
@@ -74,10 +68,13 @@ app.post("/salon/:SalonId/service/:ServiceId", async (req, res) => {
   }
 });
 
-app.get("/salonService/:SalonId", async (req, res) => {
-  const { SalonId } = req.params;
+app.get("/salonService/:salonId", async (req, res) => {
+  const { salonId } = req.params;
   try {
-    const result = await Salon.findAll({ include: Service });
+    const result = await Salon.findOne({
+      where: { salonId },
+      include: Service,
+    });
     return res.json(result);
   } catch (err) {
     return res.json({ msg: err.msg });

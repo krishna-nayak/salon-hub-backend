@@ -12,6 +12,7 @@ module.exports = {
       salonId: {
         type: Sequelize.UUID,
         allowNull: false,
+        primaryKey: true,
       },
       name: {
         type: Sequelize.STRING,

@@ -1,7 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
-  class salonService extends Model {
+  class SalonService extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,31 +10,54 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ Service, Salon }) {
       // define association here
-      this.belongsTo(Service, { foreignKey: "ServieId" });
-      this.belongsTo(Salon, { foreignKey: "SalonId" });
+      this.belongsTo(Service, { foreignKey: "serviceId" });
+      this.belongsTo(Salon, { foreignKey: "salonId" });
     }
   }
-  salonService.init(
+
+  SalonService.init(
     {
       salonServiceId: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
-      price: { type: DataTypes.INTEGER, allowNull: false },
-      description: DataTypes.STRING,
-      duration: { type: DataTypes.STRING, allowNull: false },
-      SalonId: {
-        type: DataTypes.UUID,
+      price: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Price must have a integer" },
+          notEmpty: { msg: "Price must not be empty" },
+        },
       },
-      ServiceId: {
+      description: DataTypes.STRING,
+      duration: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "duration must have a STRING" },
+          notEmpty: { msg: "duration must not be empty" },
+        },
+      },
+      salonId: {
         type: DataTypes.UUID,
+        references: {
+          model: "Salon",
+          key: "salonId",
+        },
+      },
+      serviceId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "Service",
+          key: "salonId",
+        },
       },
     },
     {
       sequelize,
       tableName: "salonServices",
-      modelName: "salonService",
+      modelName: "SalonService",
     }
   );
-  return salonService;
+  return SalonService;
 };

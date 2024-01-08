@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.UUID,
       },
       price: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       description: {
         type: Sequelize.STRING,
@@ -21,11 +21,13 @@ module.exports = {
       duration: {
         type: Sequelize.STRING,
       },
-      SalonId: {
+      salonId: {
         type: Sequelize.UUID,
+        primaryKey: true,
       },
-      ServiceId: {
+      serviceId: {
         type: Sequelize.UUID,
+        primaryKey: true,
       },
       createdAt: {
         allowNull: false,
