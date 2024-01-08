@@ -1,15 +1,17 @@
 const express = require("express");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 const cors = require("cors");
 var bodyParser = require("body-parser");
 require("./db/models");
 var userCtrl = require("./controllers/userController");
 var salonCtrl = require("./controllers/salonController");
-// import { sequelize } from "./db/models";
+
 const { sequelize } = require("./db/models");
 
 const { where } = require("sequelize");
-// const { User } = require("./db/models");
+var db = require("./db/models");
+var Service = db.Service;
+var Salon = db.Salon;
 
 const PORT = process.env.SERVER_PORT || 8080;
 const app = express();
@@ -31,6 +33,53 @@ app.get("/salon/:salonid", salonCtrl.getSalon);
 app.post("/salon", salonCtrl.postSalons);
 app.put("/salon/:salonid", salonCtrl.putSalons);
 app.delete("/salon/:salonid", salonCtrl.deleteSalons);
+
+// GET SALON SERVICE
+app.get("/test", async (req, res) => {
+  try {
+    const services = await Service.findAll({ include: Salon });
+
+    return res.json(services);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: err.message });
+  }
+});
+
+app.post("/salon/:salonId/service/:serviceId", async (req, res) => {
+  const { salonId, serviceId } = req.params;
+  const { price, description, duration } = req.body;
+
+  try {
+    const salon = await Salon.findOne({ where: { salonId } });
+    const service = await Service.findOne({ where: { serviceId } });
+
+    await salon.addService(service, {
+      through: { price, description, duration },
+    });
+
+    const result = await Salon.findAll({ include: Service });
+
+    return res.status(201).json(result);
+  } catch (err) {
+    // console.log(err);
+    console.log(err);
+    return res.status(500).json({ msg: err.message });
+  }
+});
+
+app.get("/salonService/:salonId", async (req, res) => {
+  const { salonId } = req.params;
+  try {
+    const result = await Salon.findOne({
+      where: { salonId },
+      include: Service,
+    });
+    return res.json(result);
+  } catch (err) {
+    return res.json({ msg: err.msg });
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World");

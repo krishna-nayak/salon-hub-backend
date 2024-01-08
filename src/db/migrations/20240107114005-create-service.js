@@ -2,35 +2,19 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("salons", {
+    await queryInterface.createTable("services", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      salonId: {
+      serviceId: {
         type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      address: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      city: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      openingHourStart: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      closeingHour: {
+      service_type: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -45,6 +29,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("salons");
+    await queryInterface.dropTable("services");
   },
 };
