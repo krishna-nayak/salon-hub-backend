@@ -9,8 +9,8 @@ const data = [
     city: "Hujia",
     openingHourStart: "23:16",
     closeingHour: "8:17",
-    createdAt: "7/18/2023",
-    updatedAt: "6/19/2023",
+    createdAt: "7/8/2023",
+    updatedAt: "6/9/2023",
   },
   {
     salonId: "b783787b-77dd-4bd9-b3a4-8624fbf1081d",
@@ -19,7 +19,7 @@ const data = [
     city: "Irshava",
     openingHourStart: "3:16",
     closeingHour: "8:00",
-    createdAt: "1/28/2023",
+    createdAt: "1/8/2023",
     updatedAt: "5/4/2023",
   },
   {
@@ -30,7 +30,7 @@ const data = [
     openingHourStart: "15:25",
     closeingHour: "4:53",
     createdAt: "3/11/2023",
-    updatedAt: "9/22/2023",
+    updatedAt: "9/2/2023",
   },
   {
     salonId: "e6be4fd5-ace6-412c-a494-ae1378d04ade",
@@ -39,8 +39,8 @@ const data = [
     city: "Talun",
     openingHourStart: "14:07",
     closeingHour: "0:12",
-    createdAt: "5/20/2023",
-    updatedAt: "12/30/2023",
+    createdAt: "5/2/2023",
+    updatedAt: "12/3/2023",
   },
   {
     salonId: "b2df36e0-cc54-4af8-bc4f-df311afff8de",
@@ -49,8 +49,8 @@ const data = [
     city: "Somorpenang",
     openingHourStart: "3:14",
     closeingHour: "0:42",
-    createdAt: "8/16/2023",
-    updatedAt: "2/14/2023",
+    createdAt: "8/1/2023",
+    updatedAt: "2/1/2023",
   },
 ];
 

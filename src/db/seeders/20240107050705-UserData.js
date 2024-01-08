@@ -23,7 +23,7 @@ module.exports = {
           password: "mZ5_6/6D~,",
           role: "admin",
           createdAt: "8/8/2023",
-          updatedAt: "4/21/2023",
+          updatedAt: "4/12/2023",
         },
         {
           userId: "5081beac-1d5a-4f08-ad55-2face04e362a",
@@ -40,8 +40,8 @@ module.exports = {
           email: "gseamen2@topsy.com",
           password: "vV3>bYSmL",
           role: "customer",
-          createdAt: "6/18/2023",
-          updatedAt: "6/26/2023",
+          createdAt: "6/12/2023",
+          updatedAt: "6/2/2023",
         },
         {
           userId: "f1d2ca63-a8e5-4fed-8f8d-f5dba8c2a10c",
@@ -49,7 +49,7 @@ module.exports = {
           email: "esalmen3@baidu.com",
           password: "yI7>>3\\>Zp7",
           role: "admin",
-          createdAt: "3/22/2023",
+          createdAt: "3/2/2023",
           updatedAt: "7/6/2023",
         },
         {
