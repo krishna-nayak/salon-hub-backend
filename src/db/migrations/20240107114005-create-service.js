@@ -12,6 +12,7 @@ module.exports = {
       serviceId: {
         type: Sequelize.UUID,
         allowNull: false,
+        unique: true,
         primaryKey: true,
       },
       service_type: {
