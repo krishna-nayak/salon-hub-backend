@@ -23,11 +23,17 @@ module.exports = {
       },
       salonId: {
         type: Sequelize.UUID,
-        primaryKey: true,
+        references: {
+          model: "salons",
+          key: "salonId",
+        },
       },
       serviceId: {
         type: Sequelize.UUID,
-        primaryKey: true,
+        references: {
+          model: "services",
+          key: "serviceId",
+        },
       },
       createdAt: {
         allowNull: false,
