@@ -2,8 +2,15 @@
   "development": {
     "username": "krishna",
     "password": "krishna@123",
-    "database": "database_devlopment",
+    "database": "database_development",
     "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "docker_development": {
+    "username": "krishna",
+    "password": "krishna@123",
+    "database": "database_development",
+    "host": "node_db",
     "dialect": "postgres"
   },
   "test": {
