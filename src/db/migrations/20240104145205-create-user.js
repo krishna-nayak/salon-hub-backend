@@ -6,12 +6,14 @@ module.exports = {
       id: {
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
+        //primaryKey: true,
         type: DataTypes.INTEGER,
       },
       userId: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        unique: true,
+        primaryKey: true,
+        allowNull: false,
       },
       fullName: {
         type: DataTypes.STRING,
@@ -28,9 +30,6 @@ module.exports = {
       role: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      userId: {
-        type: DataTypes.UUID,
       },
       createdAt: {
         allowNull: false,

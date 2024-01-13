@@ -37,6 +37,12 @@ app.get("/services", serviceCtrl.getServices);
 app.post("/salon/:salonId/service/:serviceId", serviceCtrl.postService);
 app.get("/salonService/:salonId", serviceCtrl.getsalonService);
 
+app.get("/appointment/:userId", userCtrl.getAppointment);
+app.post(
+  "/users/:userId/salonService/:salonServiceId",
+  userCtrl.postAppointment
+);
+
 app.get("/", (req, res) => {
   res.send("Hello World");
 });

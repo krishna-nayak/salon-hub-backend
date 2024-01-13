@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const salonservice = require("./salonservice");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -7,8 +8,12 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({ Appointment, SalonService }) {
       // define association here
+      this.belongsToMany(SalonService, {
+        through: Appointment,
+        foreignKey: "userId",
+      });
     }
     // @Override
     toJSON() {
@@ -17,7 +22,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      userId: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
+      userId: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        unique: true,
+        primaryKey: true,
+        allowNull: false,
+      },
       fullName: {
         type: DataTypes.STRING,
         allowNull: false,
