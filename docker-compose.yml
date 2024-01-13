@@ -4,8 +4,8 @@ services:
     container_name: node_db
     image: postgres
     environment:
-      POSTGRES_PASSWORD: krishna@123
       POSTGRES_USER: krishna
+      POSTGRES_PASSWORD: krishna@123
       POSTGRES_DB: database_development
     ports:
       - 5432:5432
@@ -22,6 +22,5 @@ services:
       POSTGRES_DB: ${DATABASE_DEV}
     volumes:
       - .:/usr/src/app
-
 volumes:
   postgres:
