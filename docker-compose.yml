@@ -3,6 +3,7 @@ services:
   node_db:
     container_name: node_db
     image: postgres
+    restart: always
     environment:
       POSTGRES_USER: krishna
       POSTGRES_PASSWORD: krishna@123
@@ -17,9 +18,9 @@ services:
       - 3000:8080
     environment:
       PSQL_HOST: node_db
-      POSTGRES_PASSWORD: ${PASSWORD}
-      POSTGRES_USER: ${USERNAME}
-      POSTGRES_DB: ${DATABASE_DEV}
+      POSTGRES_PASSWORD: ${DOCKER_PASSWORD}
+      POSTGRES_USER: ${DOCKER_USERNAME}
+      POSTGRES_DB: ${DOCKER_DATABASE_DEV}
     volumes:
       - .:/usr/src/app
 volumes:
