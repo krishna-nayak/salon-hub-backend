@@ -52,7 +52,7 @@ git checkout -b <branch-name>
 6. Run the following command to add database name, username, password, host, and other relevant details.
 
 ```sh
-npx sequelize db:config:init
+npx sequelize init:config
 ```
 
 7. After you have added your changes, follow the following command chain
