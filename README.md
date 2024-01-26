@@ -54,6 +54,7 @@ git checkout -b <branch-name>
 ```sh
 npx sequelize init:config
 ```
+[Additionally create .env file based on .env.sample to add username,password,host,etc  ]
 
 7. After you have added your changes, follow the following command chain
    Check the changed files
