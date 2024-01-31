@@ -1,8 +1,14 @@
 node_modules
 dist
+.DS_Store
 
-*.json
+database.json
 
 *.env
 
  
+
+ #SERVERLESS STUFF
+admin.env
+_meta
+.serverless

@@ -8,10 +8,12 @@ var salonCtrl = require("./controllers/salonController");
 var serviceCtrl = require("./controllers/salonController");
 const { sequelize } = require("./db/models");
 
-const { where } = require("sequelize");
-var db = require("./db/models");
+const serverless = require("serverless-http");
 
-const PORT = process.env.SERVER_PORT || 8080;
+// const { where } = require("sequelize");
+// var db = require("./db/models");
+
+const PORT = process.env.SERVER_PORT || 3000;
 const app = express();
 
 app.use(cors({ origin: "*" }));
@@ -51,3 +53,5 @@ app.listen(PORT, async () => {
   await sequelize.authenticate();
   console.log(`Server running on: http://localhost:${PORT}`);
 });
+
+module.exports.handler = serverless(app);

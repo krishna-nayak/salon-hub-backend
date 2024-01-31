@@ -15,7 +15,7 @@ services:
   app:
     image: salon-hub-backend
     ports:
-      - 3000:8080
+      - 3000:3000
     environment:
       PSQL_HOST: node_db
       POSTGRES_PASSWORD: ${DOCKER_PASSWORD}
