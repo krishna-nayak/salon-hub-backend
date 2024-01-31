@@ -1,0 +1,19 @@
+service: salon-hub
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-south-1
+  environment:
+    NODE_ENV: production
+
+functions:
+  api:
+    handler: src/index.handler
+    events:
+      - httpApi: "*"

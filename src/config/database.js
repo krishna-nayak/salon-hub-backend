@@ -7,10 +7,10 @@ module.exports = {
     dialect: "postgres",
   },
   docker_development: {
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DB,
-    host: process.env.PSQL_HOST,
+    username: process.env.DOCKER_USERNAME,
+    password: process.env.DOCKER_PASSWORD,
+    database: process.env.DOCKER_DATABASE_DEV,
+    host: "node_db",
     dialect: "postgres",
   },
   test: {
@@ -21,10 +21,16 @@ module.exports = {
     dialect: "mysql",
   },
   production: {
-    username: process.env.USERNAME,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE_DEV,
-    host: process.env.PSQL_HOST,
+    username: process.env.PROD_USERNAME,
+    password: process.env.PROD_PASSWORD,
+    database: process.env.PROD_DATABASE_DEV,
+    host: process.env.PROD_PSQL_HOST,
     dialect: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: false,
+        rejectUnauthorized: false,
+      },
+    },
   },
 };
