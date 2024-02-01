@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize, where } = require("sequelize");
 var db = require("../db/models");
 var Salon = db.Salon;
 var Service = db.Service;
@@ -6,7 +6,7 @@ var Service = db.Service;
 //GET
 var getSalons = async (req, res) => {
   try {
-    const salon = await Salon.findAll({});
+    const salon = await Salon.findAll({ include: Service });
     return res.json(salon);
   } catch (err) {
     console.log(err);
@@ -112,6 +112,36 @@ var postService = async (req, res) => {
   }
 };
 
+var postBulkService = async (req, res, next) => {
+  const { salonId } = req.params;
+  const { services } = req.body;
+  console.log(services);
+  try {
+    const salon = await Salon.findOne({ where: { salonId } });
+
+    services.map(async (service) => {
+      if (service?.serviceId.isEmpty() || service?.serviceId === null)
+        throw new UserError("serviceId can't be null or empty");
+      const serviceData = await Service.findOne({
+        where: { serviceId: service.serviceId },
+      });
+      await salon.addService(serviceData, {
+        through: {
+          price: service.price,
+          description: service.description,
+          duration: service.duration,
+        },
+      });
+    });
+
+    const result = await Salon.findAll({ include: Service });
+
+    return res.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
 var getsalonService = async (req, res) => {
   const { salonId } = req.params;
   try {
@@ -133,5 +163,6 @@ module.exports = {
   deleteSalons,
   getServices,
   postService,
+  postBulkService,
   getsalonService,
 };

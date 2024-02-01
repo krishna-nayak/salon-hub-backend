@@ -9,6 +9,9 @@ var serviceCtrl = require("./controllers/salonController");
 const { sequelize } = require("./db/models");
 
 const serverless = require("serverless-http");
+const { where } = require("sequelize");
+var db = require("./db/models");
+const errorHandler = require("./middleware/ErrorHandler");
 
 // const { where } = require("sequelize");
 // var db = require("./db/models");
@@ -19,6 +22,8 @@ const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(bodyParser.json());
+
+// Middleware
 
 // For Users
 app.get("/users", userCtrl.getUsers);
@@ -36,7 +41,8 @@ app.delete("/salon/:salonId", salonCtrl.deleteSalons);
 
 // GET SALON SERVICE
 app.get("/services", serviceCtrl.getServices);
-app.post("/salon/:salonId/service/:serviceId", serviceCtrl.postService);
+// app.post("/salon/:salonId/service/:serviceId", serviceCtrl.postService);
+app.post("/salon/:salonId/service", serviceCtrl.postBulkService);
 app.get("/salonService/:salonId", serviceCtrl.getsalonService);
 
 app.get("/appointment/:userId", userCtrl.getAppointment);
@@ -44,6 +50,8 @@ app.post(
   "/users/:userId/salonService/:salonServiceId",
   userCtrl.postAppointment
 );
+// ERROR MiddleWare
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
