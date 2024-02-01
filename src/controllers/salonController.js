@@ -115,7 +115,7 @@ var postService = async (req, res) => {
 var postBulkService = async (req, res, next) => {
   const { salonId } = req.params;
   const { services } = req.body;
-  console.log(services);
+  // console.log(services);
   try {
     const salon = await Salon.findOne({ where: { salonId } });
 
@@ -128,8 +128,8 @@ var postBulkService = async (req, res, next) => {
       await salon.addService(serviceData, {
         through: {
           price: service.price,
-          description: service.description,
-          duration: service.duration,
+          description: service?.description || "",
+          duration: service?.duration || "30 min",
         },
       });
     });
