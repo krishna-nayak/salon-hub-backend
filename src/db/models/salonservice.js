@@ -47,14 +47,14 @@ module.exports = (sequelize, DataTypes) => {
       salonId: {
         type: DataTypes.UUID,
         references: {
-          model: "Salon",
+          model: "salons",
           key: "salonId",
         },
       },
       serviceId: {
         type: DataTypes.UUID,
         references: {
-          model: "Service",
+          model: "services",
           key: "salonId",
         },
       },
