@@ -30,7 +30,10 @@ var getUser = async (req, res) => {
 var postUsers = async (req, res) => {
   const { fullName, email, role, password } = req.body;
   try {
-    const user = await User.create({ fullName, email, role, password });
+    const user = await User.create({
+      role: role || "USER",
+      ...{ fullName, email, password },
+    });
     return res.json(user);
   } catch (err) {
     console.log(err);
