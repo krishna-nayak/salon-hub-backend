@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
           key: "userId",
         },
       },
+      imageId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       name: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -4,6 +4,18 @@ var Salon = db.Salon;
 var Service = db.Service;
 var User = db.User;
 
+const stream = require("stream");
+const { google } = require("googleapis");
+const path = require("path");
+
+const KEYFILEPATH = path.join(__dirname, "../config/credentials.json");
+const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
+
+const auth = new google.auth.GoogleAuth({
+  keyFile: KEYFILEPATH,
+  scopes: SCOPES,
+});
+
 //GET
 var getSalons = async (req, res) => {
   try {
@@ -29,30 +41,65 @@ var getSalon = async (req, res) => {
 };
 
 //POST
+
+const uploadFile = async (fileObject) => {
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(fileObject.buffer);
+
+  const { data } = await google.drive({ version: "v3", auth }).files.create({
+    media: {
+      mimeType: fileObject.mimetype,
+      body: bufferStream,
+    },
+    requestBody: {
+      name: fileObject.originalname,
+      parents: ["17AIVPtxJUvA39djOhSXcHOo0sPuLExxH"],
+    },
+    fields: "id,name",
+  });
+  console.log("Uploaded file: " + JSON.stringify(data));
+  return data;
+};
+
 var postSalons = async (req, res) => {
   const { name, address, city, openingHourStart, closeingHour, email } =
     req.body;
+
+  const { files } = req;
   try {
-    const userDeatil = await User.findOne({ where: { email } });
+    const userDeatil = await User.findOne({
+      where: { email },
+      include: [Salon],
+    });
 
     if (!userDeatil)
       return res.status(500).json({ msg: "No Valid Email found" });
 
+    if (userDeatil.Salon)
+      return res.status(500).json({ msg: "One User have only one store" });
+
+    for (let f = 0; f < files.length; f++) {
+      var upload_data = await uploadFile(files[f]);
+    }
+
     const salon = await Salon.create({
-      name,
-      address,
-      city,
-      openingHourStart,
-      closeingHour,
+      imageId: upload_data.id,
+      ...{
+        name,
+        address,
+        city,
+        openingHourStart,
+        closeingHour,
+      },
     });
 
-    console.log(salon);
+    // console.log(salon);
     await salon.setUser(userDeatil);
 
     return res.json(salon);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    // console.log(err);
+    return res.status(500).json({ err: err.message });
   }
 };
 
