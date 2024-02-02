@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 var db = require("../db/models");
+// const salon = require("../db/models/salon");
 var User = db.User;
 var SalonService = db.SalonService;
 var Salon = db.Salon;
@@ -8,7 +9,7 @@ var Appointment = db.Appointment;
 // GET
 var getUsers = async (req, res) => {
   try {
-    const user = await User.findAll({});
+    const user = await User.findAll({ include: [Salon] });
     return res.json(user);
   } catch (err) {
     console.log(err);

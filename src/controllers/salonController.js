@@ -1,12 +1,13 @@
-const { Sequelize, where } = require("sequelize");
+// const { Sequelize, where } = require("sequelize");
 var db = require("../db/models");
 var Salon = db.Salon;
 var Service = db.Service;
+var User = db.User;
 
 //GET
 var getSalons = async (req, res) => {
   try {
-    const salon = await Salon.findAll({ include: Service });
+    const salon = await Salon.findAll({ include: [Service, User] });
     return res.json(salon);
   } catch (err) {
     console.log(err);
@@ -16,7 +17,10 @@ var getSalons = async (req, res) => {
 var getSalon = async (req, res) => {
   const { salonId } = req.params;
   try {
-    const salon = await Salon.findOne({ where: { salonId }, include: Service });
+    const salon = await Salon.findOne({
+      where: { salonId },
+      include: [Service, User],
+    });
     return res.json(salon);
   } catch (err) {
     console.log(err);
@@ -26,15 +30,25 @@ var getSalon = async (req, res) => {
 
 //POST
 var postSalons = async (req, res) => {
-  const { name, address, city, openinghourstart, closeingHour } = req.body;
+  const { name, address, city, openingHourStart, closeingHour, email } =
+    req.body;
   try {
+    const userDeatil = await User.findOne({ where: { email } });
+
+    if (!userDeatil)
+      return res.status(500).json({ msg: "No Valid Email found" });
+
     const salon = await Salon.create({
       name,
       address,
       city,
-      openinghourstart,
+      openingHourStart,
       closeingHour,
     });
+
+    console.log(salon);
+    await salon.setUser(userDeatil);
+
     return res.json(salon);
   } catch (err) {
     console.log(err);
