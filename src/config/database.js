@@ -1,6 +1,6 @@
 module.exports = {
   development: {
-    username: process.env.USERNAME,
+    username: process.env.DB_USERNAME,
     password: process.env.PASSWORD,
     database: process.env.DATABASE_DEV,
     host: process.env.PSQL_HOST,
