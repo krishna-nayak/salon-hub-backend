@@ -27,6 +27,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Middleware
+app.post("/login", userCtrl.loginUsers);
 
 // For Users
 app.get("/users", userCtrl.getUsers);

@@ -121,6 +121,23 @@ var postAppointment = async (req, res) => {
   }
 };
 
+var loginUsers = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ where: { email } });
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+    if (user.password !== password) {
+      return res.status(403).json({ message: " Password is incorrect" });
+    }
+    return res.json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+};
 module.exports = {
   getUsers,
   getUser,
@@ -129,4 +146,5 @@ module.exports = {
   deleteUsers,
   getAppointment,
   postAppointment,
+  loginUsers,
 };
