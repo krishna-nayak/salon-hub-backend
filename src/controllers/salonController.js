@@ -1,12 +1,25 @@
-const { Sequelize, where } = require("sequelize");
+// const { Sequelize, where } = require("sequelize");
 var db = require("../db/models");
 var Salon = db.Salon;
 var Service = db.Service;
+var User = db.User;
+
+const stream = require("stream");
+const { google } = require("googleapis");
+const path = require("path");
+
+const KEYFILEPATH = path.join(__dirname, "../config/credentials.json");
+const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
+
+const auth = new google.auth.GoogleAuth({
+  keyFile: KEYFILEPATH,
+  scopes: SCOPES,
+});
 
 //GET
 var getSalons = async (req, res) => {
   try {
-    const salon = await Salon.findAll({ include: Service });
+    const salon = await Salon.findAll({ include: [Service, User] });
     return res.json(salon);
   } catch (err) {
     console.log(err);
@@ -16,7 +29,10 @@ var getSalons = async (req, res) => {
 var getSalon = async (req, res) => {
   const { salonId } = req.params;
   try {
-    const salon = await Salon.findOne({ where: { salonId }, include: Service });
+    const salon = await Salon.findOne({
+      where: { salonId },
+      include: [Service, User],
+    });
     return res.json(salon);
   } catch (err) {
     console.log(err);
@@ -25,20 +41,65 @@ var getSalon = async (req, res) => {
 };
 
 //POST
+
+const uploadFile = async (fileObject) => {
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(fileObject.buffer);
+
+  const { data } = await google.drive({ version: "v3", auth }).files.create({
+    media: {
+      mimeType: fileObject.mimetype,
+      body: bufferStream,
+    },
+    requestBody: {
+      name: fileObject.originalname,
+      parents: ["17AIVPtxJUvA39djOhSXcHOo0sPuLExxH"],
+    },
+    fields: "id,name",
+  });
+  console.log("Uploaded file: " + JSON.stringify(data));
+  return data;
+};
+
 var postSalons = async (req, res) => {
-  const { name, address, city, openinghourstart, closeingHour } = req.body;
+  const { name, address, city, openingHourStart, closeingHour, email } =
+    req.body;
+
+  const { files } = req;
   try {
-    const salon = await Salon.create({
-      name,
-      address,
-      city,
-      openinghourstart,
-      closeingHour,
+    const userDeatil = await User.findOne({
+      where: { email },
+      include: [Salon],
     });
+
+    if (!userDeatil)
+      return res.status(500).json({ msg: "No Valid Email found" });
+
+    if (userDeatil.Salon)
+      return res.status(500).json({ msg: "One User have only one store" });
+
+    for (let f = 0; f < files.length; f++) {
+      var upload_data = await uploadFile(files[f]);
+    }
+
+    const salon = await Salon.create({
+      imageId: upload_data.id,
+      ...{
+        name,
+        address,
+        city,
+        openingHourStart,
+        closeingHour,
+      },
+    });
+
+    // console.log(salon);
+    await salon.setUser(userDeatil);
+
     return res.json(salon);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    // console.log(err);
+    return res.status(500).json({ err: err.message });
   }
 };
 

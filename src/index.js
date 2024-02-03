@@ -2,6 +2,8 @@ const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
 var bodyParser = require("body-parser");
+const multer = require("multer");
+
 require("./db/models");
 var userCtrl = require("./controllers/userController");
 var salonCtrl = require("./controllers/salonController");
@@ -11,13 +13,14 @@ const { sequelize } = require("./db/models");
 const serverless = require("serverless-http");
 const { where } = require("sequelize");
 var db = require("./db/models");
-const errorHandler = require("./middleware/ErrorHandler");
 
-// const { where } = require("sequelize");
-// var db = require("./db/models");
+const errorHandler = require("./middleware/ErrorHandler");
 
 const PORT = process.env.SERVER_PORT || 3000;
 const app = express();
+const upload = multer();
+
+// console.log(__dirname);
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
@@ -35,7 +38,7 @@ app.delete("/users/:userId", userCtrl.deleteUsers);
 // For Salons
 app.get("/salon", salonCtrl.getSalons);
 app.get("/salon/:salonId", salonCtrl.getSalon);
-app.post("/salon", salonCtrl.postSalons);
+app.post("/salon", upload.any(), salonCtrl.postSalons);
 app.put("/salon/:salonId", salonCtrl.putSalons);
 app.delete("/salon/:salonId", salonCtrl.deleteSalons);
 
