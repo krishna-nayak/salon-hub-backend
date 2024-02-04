@@ -1,15 +1,26 @@
-const { Sequelize } = require("sequelize");
 var db = require("../db/models");
-// const salon = require("../db/models/salon");
+
 var User = db.User;
 var SalonService = db.SalonService;
 var Salon = db.Salon;
 var Service = db.Service;
 var Appointment = db.Appointment;
+
 // GET
 var getUsers = async (req, res) => {
   try {
-    const user = await User.findAll({ include: [Salon] });
+    const { salon, extraAttri } = req.query;
+    const arr = [];
+    if (salon === "true") arr.push(Salon);
+    console.log(extraAttri + " " + typeof extraAttri);
+
+    const extraData = [];
+    if (!extraAttri) extraData.push("createdAt", "updatedAt");
+
+    const user = await User.findAll({
+      include: arr,
+      attributes: { exclude: extraData },
+    });
     return res.json(user);
   } catch (err) {
     console.log(err);
@@ -19,7 +30,11 @@ var getUsers = async (req, res) => {
 var getUser = async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await User.findOne({ where: { userId } });
+    const user = await User.findOne({
+      where: { userId },
+      include: [Salon],
+    });
+
     return res.json(user);
   } catch (err) {
     console.log(err);
@@ -41,13 +56,14 @@ var postUsers = async (req, res) => {
     return res.status(500).json(err);
   }
 };
+
 // PUT
 var putUsers = async (req, res) => {
   const { fullName, email, role } = req.body;
   const { userId } = req.params;
   try {
     const userDetails = await User.findOne({ where: { userId } });
-    const user = await User.update(
+    await User.update(
       {
         fullName: fullName ? fullName : userDetails.fullName,
         email: email ? email : userDetails.email,
@@ -55,7 +71,7 @@ var putUsers = async (req, res) => {
       },
       { where: { userId } }
     );
-    return res.json(user);
+    return res.json({ message: "user data updated", id: userId });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -66,8 +82,11 @@ var putUsers = async (req, res) => {
 var deleteUsers = async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await User.destroy({ where: { userId } });
-    return res.json(user);
+    await User.destroy({ where: { userId } });
+    return res.json({
+      message: "user id " + userId + " data DELETED",
+      id: userId,
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
