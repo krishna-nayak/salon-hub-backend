@@ -7,6 +7,7 @@ var User = db.User;
 const stream = require("stream");
 const { google } = require("googleapis");
 const path = require("path");
+const { where } = require("sequelize");
 
 const KEYFILEPATH = path.join(__dirname, "../config/credentials.json");
 const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
@@ -61,7 +62,7 @@ const uploadFile = async (fileObject) => {
   return data;
 };
 
-var postSalons = async (req, res) => {
+var postSalons = async (req, res, next) => {
   const { name, address, city, openingHourStart, closeingHour, email } =
     req.body;
 
@@ -72,8 +73,7 @@ var postSalons = async (req, res) => {
       include: [Salon],
     });
 
-    if (!userDeatil)
-      return res.status(500).json({ msg: "No Valid Email found" });
+    if (!userDeatil) throw new Error("Email Not found");
 
     if (userDeatil.Salon)
       return res.status(500).json({ msg: "One User have only one store" });
@@ -99,7 +99,8 @@ var postSalons = async (req, res) => {
     return res.json(salon);
   } catch (err) {
     // console.log(err);
-    return res.status(500).json({ err: err.message });
+    next(err);
+    // return res.status(500).json({ err: err.message });
   }
 };
 
@@ -143,7 +144,10 @@ var deleteSalons = async (req, res) => {
 
 var getServices = async (req, res) => {
   try {
-    const services = await Service.findAll({ include: Salon });
+    const { salon } = req.query;
+    const arr = [];
+    if (salon === "true") arr.push(Salon);
+    const services = await Service.findAll({ include: arr });
 
     return res.json(services);
   } catch (err) {
@@ -181,7 +185,7 @@ var postBulkService = async (req, res, next) => {
     const salon = await Salon.findOne({ where: { salonId } });
 
     services.map(async (service) => {
-      if (service?.serviceId.isEmpty() || service?.serviceId === null)
+      if (service?.serviceId === "" || service?.serviceId === null)
         throw new UserError("serviceId can't be null or empty");
       const serviceData = await Service.findOne({
         where: { serviceId: service.serviceId },
@@ -195,7 +199,10 @@ var postBulkService = async (req, res, next) => {
       });
     });
 
-    const result = await Salon.findAll({ include: Service });
+    const result = await Salon.findOne({
+      where: { salonId },
+      include: Service,
+    });
 
     return res.status(201).json(result);
   } catch (err) {

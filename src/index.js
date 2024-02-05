@@ -37,16 +37,16 @@ app.put("/users/:userId", userCtrl.putUsers);
 app.delete("/users/:userId", userCtrl.deleteUsers);
 
 // For Salons
+app.post("/salon", upload.any(), salonCtrl.postSalons);
 app.get("/salon", salonCtrl.getSalons);
 app.get("/salon/:salonId", salonCtrl.getSalon);
-app.post("/salon", upload.any(), salonCtrl.postSalons);
 app.put("/salon/:salonId", salonCtrl.putSalons);
 app.delete("/salon/:salonId", salonCtrl.deleteSalons);
 
 // GET SALON SERVICE
 app.get("/services", serviceCtrl.getServices);
 // app.post("/salon/:salonId/service/:serviceId", serviceCtrl.postService);
-app.post("/salon/:salonId/service", serviceCtrl.postBulkService);
+app.post("/salon/:salonId/services", serviceCtrl.postBulkService);
 app.get("/salonService/:salonId", serviceCtrl.getsalonService);
 
 app.get("/appointment/:userId", userCtrl.getAppointment);
