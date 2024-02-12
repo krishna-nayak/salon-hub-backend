@@ -82,6 +82,11 @@ var postSalons = async (req, res, next) => {
       var upload_data = await uploadFile(files[f]);
     }
 
+    await User.update(
+      { ...userDeatil, role: "SHOPKEEPER" },
+      { where: { email } }
+    );
+
     const salon = await Salon.create({
       imageId: upload_data.id,
       ...{
@@ -183,7 +188,6 @@ var postBulkService = async (req, res, next) => {
   // console.log(services);
   try {
     const salon = await Salon.findOne({ where: { salonId } });
-
     services.map(async (service) => {
       if (service?.serviceId === "" || service?.serviceId === null)
         throw new UserError("serviceId can't be null or empty");
