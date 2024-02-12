@@ -82,7 +82,17 @@ var putUsers = async (req, res) => {
 var deleteUsers = async (req, res) => {
   const { userId } = req.params;
   try {
-    await User.destroy({ where: { userId } });
+    const user = await User.findOne({
+      where: { userId: userId },
+      include: Salon,
+    });
+    console.log(user.salon);
+    if (user.Salon) await user.setSalon(null);
+
+    await User.destroy({
+      where: { userId },
+    });
+
     return res.json({
       message: "user id " + userId + " data DELETED",
       id: userId,

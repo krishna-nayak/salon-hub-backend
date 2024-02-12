@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(SalonService, {
         through: Appointment,
         foreignKey: "userId",
+        onDelete: "CASCADE",
       });
 
       this.hasOne(Salon, {
         foreignKey: "userId", // This will be the foreign key in the Salon table
+        onDelete: "CASCADE",
       });
     }
     // @Override
