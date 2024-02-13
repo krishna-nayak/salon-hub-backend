@@ -20,8 +20,15 @@ const auth = new google.auth.GoogleAuth({
 //GET
 var getSalons = async (req, res) => {
   try {
-    const salon = await Salon.findAll({ include: [Service, User] });
-    return res.json(salon);
+    const { city, name, locality } = req.query;
+
+    const obj = {};
+    if (city) obj.city = city;
+    if (name) obj.name = name;
+    if (locality) obj.locality = locality;
+
+    const salon = await Salon.findAll({ where: obj, include: [Service, User] });
+    return res.json({ result: salon });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
