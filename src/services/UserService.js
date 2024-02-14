@@ -2,7 +2,10 @@ const UserError = require("../ErrorHandler/UserError");
 var db = require("../db/models");
 
 var User = db.User;
+var SalonService = db.SalonService;
 var Salon = db.Salon;
+var Service = db.Service;
+var Appointment = db.Appointment;
 
 class UserService {
   static async getAllUsers(query) {
