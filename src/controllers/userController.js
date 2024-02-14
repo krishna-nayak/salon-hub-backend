@@ -6,103 +6,57 @@ var Salon = db.Salon;
 var Service = db.Service;
 var Appointment = db.Appointment;
 
+const UserService = require("../services/userService");
+const UserError = require("../ErrorHandler/UserError");
+
 // GET
-var getUsers = async (req, res) => {
+var getUsers = async (req, res, next) => {
   try {
-    const { salon, extraAttri } = req.query;
-    const arr = [];
-    if (salon === "true") arr.push(Salon);
-    console.log(extraAttri + " " + typeof extraAttri);
-
-    const extraData = [];
-    if (!extraAttri) extraData.push("createdAt", "updatedAt");
-
-    const user = await User.findAll({
-      include: arr,
-      attributes: { exclude: extraData },
-    });
-    return res.json(user);
+    const [user, status] = await UserService.getAllUsers(req.query);
+    return res.status(status).json(user);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    next(err);
   }
 };
-var getUser = async (req, res) => {
+
+var getUser = async (req, res, next) => {
   const { userId } = req.params;
   try {
-    const user = await User.findOne({
-      where: { userId },
-      include: [Salon],
-    });
-
-    return res.json(user);
+    const [user, status] = await UserService.getUserById(userId);
+    res.status(status).json(user);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    next(err);
   }
 };
 
 // POST
-var postUsers = async (req, res) => {
-  const { fullName, email, role, password } = req.body;
+var postUsers = async (req, res, next) => {
   try {
-    const [user, created] = await User.findOrCreate({
-      where: { email },
-      defaults: {
-        role: role || "USER",
-        ...{ fullName, email, password },
-      },
-    });
-    return res.json(user);
+    const [user, status] = await UserService.createUser(req.body);
+    return res.status(status).json(user);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    next(err);
   }
 };
 
 // PUT
-var putUsers = async (req, res) => {
-  const { fullName, email, role } = req.body;
-  const { userId } = req.params;
+var putUsers = async (req, res, next) => {
   try {
-    const userDetails = await User.findOne({ where: { userId } });
-    await User.update(
-      {
-        fullName: fullName ? fullName : userDetails.fullName,
-        email: email ? email : userDetails.email,
-        role: role ? role : userDetails.role,
-      },
-      { where: { userId } }
-    );
-    return res.json({ message: "user data updated", id: userId });
+    const updateRes = await UserService.updateUser(req.body, req.params);
+    return res.status(200).json(updateRes);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    next(err);
   }
 };
 
 // DELETE
-var deleteUsers = async (req, res) => {
+var deleteUsers = async (req, res, next) => {
   const { userId } = req.params;
   try {
-    const user = await User.findOne({
-      where: { userId: userId },
-      include: Salon,
-    });
-    console.log(user.salon);
-    if (user.Salon) await user.setSalon(null);
-
-    await User.destroy({
-      where: { userId },
-    });
-
-    return res.json({
-      message: "user id " + userId + " data DELETED",
-      id: userId,
-    });
+    const deleteRes = await UserService.deleteUser(userId);
+    return res.status(202).json(deleteRes);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    next(err);
   }
 };
 
