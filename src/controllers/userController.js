@@ -8,6 +8,7 @@ var Appointment = db.Appointment;
 
 const UserService = require("../services/userService");
 const UserError = require("../ErrorHandler/UserError");
+const AuthService = require("../services/AuthService");
 
 // GET
 var getUsers = async (req, res, next) => {
@@ -107,21 +108,13 @@ var postAppointment = async (req, res) => {
   }
 };
 
-var loginUsers = async (req, res) => {
+var loginUsers = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email } });
-    console.log(user);
-    if (!user) {
-      return res.status(404).json({ message: "user not found" });
-    }
-    if (user.password !== password) {
-      return res.status(403).json({ message: " Password is incorrect" });
-    }
-    return res.json(user);
+    const [user, status] = await AuthService.login(email, password);
+    return res.status(status).json(user);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    next(err);
   }
 };
 module.exports = {
