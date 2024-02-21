@@ -94,7 +94,6 @@ var postAppointment = async (req, res, next) => {
 
   try {
     const user = await User.findOne({ where: { userId } });
-    console.log(user);
     if (!user) throw new Error(`User not found`);
 
     salonServiceIdArr?.map(async (salonServiceId) => {
@@ -103,21 +102,13 @@ var postAppointment = async (req, res, next) => {
       });
 
       if (!salonService) return;
-      const date = new Date();
       await Appointment.create({
         salonServiceId: salonServiceId,
         userId: userId,
-        date: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+        date: date,
         status: "pending",
         notes,
       });
-      // await salonService.addUser(user, {
-      //   through: {
-      //     date: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
-      //     status: "pending",
-      //     notes,
-      //   },
-      // });
     });
 
     const result = await User.findOne({
