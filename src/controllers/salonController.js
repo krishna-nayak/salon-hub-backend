@@ -4,115 +4,37 @@ var Salon = db.Salon;
 var Service = db.Service;
 var User = db.User;
 
-const stream = require("stream");
-const { google } = require("googleapis");
-const path = require("path");
 const { where } = require("sequelize");
-
-const KEYFILEPATH = path.join(__dirname, "../config/credentials.json");
-const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
-
-const auth = new google.auth.GoogleAuth({
-  keyFile: KEYFILEPATH,
-  scopes: SCOPES,
-});
+const SalonService = require("../services/SalonService");
 
 //GET
-var getSalons = async (req, res) => {
+var getSalons = async (req, res, next) => {
   try {
-    const { city, name, locality } = req.query;
-
-    const obj = {};
-    if (city) obj.city = city;
-    if (name) obj.name = name;
-    if (locality) obj.locality = locality;
-
-    const salon = await Salon.findAll({ where: obj, include: [Service, User] });
-    return res.json({ result: salon });
+    const salon = await SalonService.getAllSalons(req.query);
+    return res.status(200).json({ result: salon });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    next(err);
   }
 };
-var getSalon = async (req, res) => {
+
+var getSalon = async (req, res, next) => {
   const { salonId } = req.params;
   try {
-    const salon = await Salon.findOne({
-      where: { salonId },
-      include: [Service, User],
-    });
-    return res.json(salon);
+    const salon = await SalonService.getSalonById(salonId);
+    return res.status(200).json(salon);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+    next(err);
   }
 };
 
 //POST
-
-const uploadFile = async (fileObject) => {
-  const bufferStream = new stream.PassThrough();
-  bufferStream.end(fileObject.buffer);
-
-  const { data } = await google.drive({ version: "v3", auth }).files.create({
-    media: {
-      mimeType: fileObject.mimetype,
-      body: bufferStream,
-    },
-    requestBody: {
-      name: fileObject.originalname,
-      parents: ["17AIVPtxJUvA39djOhSXcHOo0sPuLExxH"],
-    },
-    fields: "id,name",
-  });
-  console.log("Uploaded file: " + JSON.stringify(data));
-  return data;
-};
-
 var postSalons = async (req, res, next) => {
-  const { name, address, city, openingHourStart, closeingHour, email } =
-    req.body;
-
   const { files } = req;
   try {
-    const userDeatil = await User.findOne({
-      where: { email },
-      include: [Salon],
-    });
-
-    if (!userDeatil) throw new Error("Email Not found");
-
-    if (userDeatil.Salon)
-      return res.status(500).json({ msg: "One User have only one store" });
-
-    for (let f = 0; f < files.length; f++) {
-      var upload_data = await uploadFile(files[f]);
-    }
-
-    await User.update(
-      { ...userDeatil, role: "SHOPKEEPER" },
-      { where: { email } }
-    );
-
-    const salon = await Salon.create({
-      imageId: upload_data.id,
-      ...{
-        name,
-        address,
-        city,
-        openingHourStart,
-        closeingHour,
-      },
-    });
-
-    // console.log(salon);
-    await salon.setUser(userDeatil);
-
-    return res.json(salon);
+    const salon = await SalonService.createSalon(req.body, files);
+    return res.status(200).json(salon);
   } catch (err) {
-    // console.log(err);
     next(err);
-    // return res.status(500).json({ err: err.message });
   }
 };
 
@@ -145,7 +67,7 @@ var putSalons = async (req, res) => {
 var deleteSalons = async (req, res) => {
   const { salonId } = req.params;
   try {
-    const salon = await Salon.destroy({ where: { salonId } });
+    const salon = await SalonService.deleteSalon(salonId);
     return res.json(salon);
   } catch (err) {
     console.log(err);
@@ -183,9 +105,7 @@ var postService = async (req, res) => {
 
     return res.status(201).json(result);
   } catch (err) {
-    // console.log(err);
-    console.log(err);
-    return res.status(500).json({ msg: err.message });
+    next(err);
   }
 };
 
