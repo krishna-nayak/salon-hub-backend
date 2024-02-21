@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsTo(Service, { foreignKey: "serviceId" });
       this.belongsTo(Salon, { foreignKey: "salonId" });
+
       this.belongsToMany(User, {
         through: Appointment,
         foreignKey: "salonServiceId",

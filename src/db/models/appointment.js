@@ -11,10 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsTo(User, {
         foreignKey: "userId",
-        // foreignKeyConstraint: true,
+        onDelete: "CASCADE",
       });
       this.belongsTo(SalonService, {
         foreignKey: "salonServiceId",
+        onDelete: "CASCADE",
       });
     }
   }

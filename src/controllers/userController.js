@@ -6,9 +6,10 @@ var Salon = db.Salon;
 var Service = db.Service;
 var Appointment = db.Appointment;
 
-const UserService = require("../services/userService");
+const UserService = require("../services/UserService");
 const UserError = require("../ErrorHandler/UserError");
 const AuthService = require("../services/AuthService");
+const { where } = require("sequelize");
 
 // GET
 var getUsers = async (req, res, next) => {
@@ -66,15 +67,19 @@ var getAppointment = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const result = await User.findOne({
+    // const result = await User.findOne({
+    //   where: { userId },
+    //   include: [
+    //     {
+    //       model: SalonService,
+    //       through: Appointment,
+    //       include: [Service, Salon],
+    //     },
+    //   ],
+    // });
+    const result = await Appointment.findAll({
       where: { userId },
-      include: [
-        {
-          model: SalonService,
-          through: Appointment,
-          include: [Service, Salon],
-        },
-      ],
+      include: [User],
     });
     //console.log(result);
     return res.json(result);
@@ -83,30 +88,53 @@ var getAppointment = async (req, res) => {
   }
 };
 
-var postAppointment = async (req, res) => {
-  const { userId, salonServiceId } = req.params;
-  const { date, status, notes } = req.body;
+var postAppointment = async (req, res, next) => {
+  const { userId } = req.params;
+  const { date, status, notes, salonServiceIdArr } = req.body;
 
   try {
     const user = await User.findOne({ where: { userId } });
     console.log(user);
-    const salonService = await SalonService.findOne({
-      where: { salonServiceId },
+    if (!user) throw new Error(`User not found`);
+
+    salonServiceIdArr?.map(async (salonServiceId) => {
+      const salonService = await SalonService.findOne({
+        where: { salonServiceId },
+      });
+
+      if (!salonService) return;
+      const date = new Date();
+      await Appointment.create({
+        salonServiceId: salonServiceId,
+        userId: userId,
+        date: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+        status: "pending",
+        notes,
+      });
+      // await salonService.addUser(user, {
+      //   through: {
+      //     date: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+      //     status: "pending",
+      //     notes,
+      //   },
+      // });
     });
 
-    await user.addSalonService(salonService, {
-      through: { date, status, notes },
+    const result = await User.findOne({
+      where: { userId },
+      // include: [SalonService],
     });
-
-    const result = await User.findAll({ include: SalonService });
 
     return res.status(201).json(result);
   } catch (err) {
     // console.log(err);
     console.log(err);
-    return res.status(500).json({ msg: err.message });
+    next(err);
+    // return res.status(500).json({ msg: err.message });
   }
 };
+
+// TODO: delete ApointmentService
 
 var loginUsers = async (req, res, next) => {
   const { email, password } = req.body;

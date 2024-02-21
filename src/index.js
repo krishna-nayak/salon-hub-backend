@@ -50,10 +50,8 @@ app.post("/salon/:salonId/services", serviceCtrl.postBulkService);
 app.get("/salonService/:salonId", serviceCtrl.getsalonService);
 
 app.get("/appointment/:userId", userCtrl.getAppointment);
-app.post(
-  "/users/:userId/salonService/:salonServiceId",
-  userCtrl.postAppointment
-);
+
+app.post("/users/:userId/salonService", userCtrl.postAppointment);
 // ERROR MiddleWare
 app.use(errorHandler);
 

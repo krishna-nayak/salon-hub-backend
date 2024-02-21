@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
         onDelete: "CASCADE",
       });
+      this.hasMany(Appointment, { foreignKey: "userId" });
 
       this.hasOne(Salon, {
         foreignKey: "userId", // This will be the foreign key in the Salon table

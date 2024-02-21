@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const UserError = require("../ErrorHandler/UserError");
 var db = require("../db/models");
 
@@ -16,9 +17,10 @@ class UserService {
     if (!extraAttri) extraData.push("createdAt", "updatedAt");
 
     const user = await User.findAll({
-      include: arr,
+      include: [...arr, Appointment],
       attributes: { exclude: extraData },
     });
+
     return [user, 200];
   }
 
