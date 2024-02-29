@@ -12,7 +12,15 @@ module.exports = (sequelize, DataTypes) => {
 
   Imagestore.init(
     {
-      salonId: DataTypes.UUID,
+      salonId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "salons",
+          key: "salonId",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
       image: DataTypes.BLOB("long"),
     },
     {

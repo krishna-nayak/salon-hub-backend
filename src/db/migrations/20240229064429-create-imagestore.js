@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.UUID,
       },
       image: {
-        type: Sequelize.BLOB("long"),
+        type: Sequelize.BLOB,
       },
       createdAt: {
         allowNull: false,
