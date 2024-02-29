@@ -30,6 +30,8 @@ module.exports = {
           model: "salons",
           key: "salonId",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       serviceId: {
         type: Sequelize.UUID,
@@ -37,6 +39,8 @@ module.exports = {
           model: "services",
           key: "serviceId",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

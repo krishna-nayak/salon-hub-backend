@@ -90,7 +90,7 @@ var getAppointment = async (req, res) => {
 
 var postAppointment = async (req, res, next) => {
   const { userId } = req.params;
-  const { date, status, notes, salonServiceIdArr } = req.body;
+  const { date, status, time, duration, notes, salonServiceIdArr } = req.body;
 
   try {
     const user = await User.findOne({ where: { userId } });
@@ -108,6 +108,8 @@ var postAppointment = async (req, res, next) => {
         date: date,
         status: "pending",
         notes,
+        time,
+        duration,
       });
     });
 

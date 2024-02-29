@@ -10,6 +10,8 @@ module.exports = {
         model: "users",
         key: "userId",
       },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     });
   },
 
