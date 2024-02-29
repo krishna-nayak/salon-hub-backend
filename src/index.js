@@ -58,6 +58,8 @@ app.post(
   serviceCtrl.uploadImage
 );
 
+app.get("/salon/:salonId/images", serviceCtrl.getImage);
+
 // ERROR MiddleWare
 app.use(errorHandler);
 

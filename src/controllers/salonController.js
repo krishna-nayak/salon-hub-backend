@@ -189,6 +189,12 @@ var uploadImage = async (req, res, next) => {
     next(err);
   }
 };
+
+var getImage = async (req, res, next) => {
+  try {
+    const { salonId } = req.params;
+    const images = await Imagestore.findAll({ where: { salonId } });
+    return res.status(201).json({ name: "images", images });
   } catch (err) {
     next(err);
   }
@@ -204,5 +210,6 @@ module.exports = {
   postBulkService,
   getsalonService,
   uploadImage,
+  getImage,
   //uploaded: uploaded,
 };
