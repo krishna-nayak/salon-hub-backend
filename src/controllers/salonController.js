@@ -6,8 +6,9 @@ var User = db.User;
 var Imagestore = db.Imagestore;
 const { where } = require("sequelize");
 const SalonService = require("../services/SalonService");
+
 //this code is add file nae to Image
-const multer = require("multer");
+/*const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const storage = multer.diskStorage({
@@ -26,6 +27,8 @@ const storage = multer.diskStorage({
     );
   },
 });
+*/
+
 //GET
 var getSalons = async (req, res, next) => {
   try {
@@ -172,7 +175,7 @@ var getsalonService = async (req, res) => {
     return res.json({ msg: err.msg });
   }
 };
-const upload = multer({ storage: storage });
+//const uploaded = multer({ storage: storage });
 
 var uploadImage = async (req, res) => {
   try {
@@ -208,5 +211,5 @@ module.exports = {
   postBulkService,
   getsalonService,
   uploadImage,
-  upload: upload,
+  //uploaded: uploaded,
 };

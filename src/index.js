@@ -3,17 +3,15 @@ require("dotenv").config();
 const cors = require("cors");
 var bodyParser = require("body-parser");
 const multer = require("multer");
-
 require("./db/models");
 var userCtrl = require("./controllers/userController");
 var salonCtrl = require("./controllers/salonController");
 var serviceCtrl = require("./controllers/salonController");
 const { sequelize } = require("./db/models");
-
+const uploaded = multer();
 const serverless = require("serverless-http");
 const { where } = require("sequelize");
 var db = require("./db/models");
-var Appointment = db.Appointment;
 
 const errorHandler = require("./middleware/ErrorHandler");
 
@@ -51,18 +49,8 @@ app.post("/salon/:salonId/services", serviceCtrl.postBulkService);
 app.get("/salonService/:salonId", serviceCtrl.getsalonService);
 
 app.get("/appointment/:userId", userCtrl.getAppointment);
-app.post("/appointment/:userId/salonService", userCtrl.postAppointment);
-app.delete("/appointment/delete/:userId/:id", async (req, res, next) => {
-  const { userId, id } = req.params;
 
-  await Appointment.destroy({
-    where: {
-      userId: userId,
-      id: id,
-    },
-  });
-  res.send("delete");
-});
+app.post("/appointment/:userId/salonService", userCtrl.postAppointment);
 // ERROR MiddleWare
 app.use(errorHandler);
 
@@ -77,7 +65,7 @@ app.listen(PORT, async () => {
 
 app.post(
   "/salon/:salonId/images",
-  upload.array("images"),
+  uploaded.array("images"),
   serviceCtrl.uploadImage
 );
 
