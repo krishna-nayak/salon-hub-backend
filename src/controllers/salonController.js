@@ -177,7 +177,7 @@ var getsalonService = async (req, res) => {
 };
 //const uploaded = multer({ storage: storage });
 
-var uploadImage = async (req, res) => {
+var uploadImage = async (req, res, next) => {
   try {
     const { salonId } = req.params;
     const files = req.files;
@@ -190,14 +190,14 @@ var uploadImage = async (req, res) => {
 
     for (const file of files) {
       const imageData = file.buffer;
+      console.log(imageData);
       const image = await Imagestore.create({ salonId, image: imageData });
       images.push(image);
     }
 
     return res.status(201).json({ images });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Failed to upload images" });
+    next(err);
   }
 };
 module.exports = {

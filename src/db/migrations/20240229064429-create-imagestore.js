@@ -11,6 +11,9 @@ module.exports = {
       },
       salonId: {
         type: Sequelize.UUID,
+        references: { model: "salons", key: "salonId" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       image: {
         type: Sequelize.BLOB,

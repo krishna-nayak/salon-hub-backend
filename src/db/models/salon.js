@@ -1,7 +1,5 @@
 "use strict";
 const { Model } = require("sequelize");
-const Imagestore = require("./imagestore");
-const salonservice = require("./salonservice");
 
 module.exports = (sequelize, DataTypes) => {
   class Salon extends Model {

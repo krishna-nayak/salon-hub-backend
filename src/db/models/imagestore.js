@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      image: DataTypes.BLOB("long"),
+      image: DataTypes.BLOB,
     },
     {
       sequelize,

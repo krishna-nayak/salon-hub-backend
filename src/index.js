@@ -8,7 +8,7 @@ var userCtrl = require("./controllers/userController");
 var salonCtrl = require("./controllers/salonController");
 var serviceCtrl = require("./controllers/salonController");
 const { sequelize } = require("./db/models");
-const uploaded = multer();
+
 const serverless = require("serverless-http");
 const { where } = require("sequelize");
 var db = require("./db/models");
@@ -51,6 +51,13 @@ app.get("/salonService/:salonId", serviceCtrl.getsalonService);
 app.get("/appointment/:userId", userCtrl.getAppointment);
 
 app.post("/appointment/:userId/salonService", userCtrl.postAppointment);
+
+app.post(
+  "/salon/:salonId/images",
+  upload.array("images"),
+  serviceCtrl.uploadImage
+);
+
 // ERROR MiddleWare
 app.use(errorHandler);
 
@@ -62,11 +69,5 @@ app.listen(PORT, async () => {
   await sequelize.authenticate();
   console.log(`Server running on: http://localhost:${PORT}`);
 });
-
-app.post(
-  "/salon/:salonId/images",
-  uploaded.array("images"),
-  serviceCtrl.uploadImage
-);
 
 module.exports.handler = serverless(app);
