@@ -15,6 +15,8 @@ module.exports = {
           model: "users",
           key: "userId",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       salonServiceId: {
         type: Sequelize.UUID,
@@ -22,8 +24,16 @@ module.exports = {
           model: "salonServices",
           key: "salonServiceId",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       date: {
+        type: Sequelize.STRING,
+      },
+      time: {
+        type: Sequelize.STRING,
+      },
+      duration: {
         type: Sequelize.STRING,
       },
       status: {

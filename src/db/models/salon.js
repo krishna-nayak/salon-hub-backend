@@ -35,10 +35,12 @@ module.exports = (sequelize, DataTypes) => {
           model: "users",
           key: "userId",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       imageId: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       name: {
         type: DataTypes.STRING,

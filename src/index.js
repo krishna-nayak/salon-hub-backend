@@ -13,6 +13,7 @@ const { sequelize } = require("./db/models");
 const serverless = require("serverless-http");
 const { where } = require("sequelize");
 var db = require("./db/models");
+var Appointment = db.Appointment;
 
 const errorHandler = require("./middleware/ErrorHandler");
 
@@ -50,8 +51,18 @@ app.post("/salon/:salonId/services", serviceCtrl.postBulkService);
 app.get("/salonService/:salonId", serviceCtrl.getsalonService);
 
 app.get("/appointment/:userId", userCtrl.getAppointment);
-
 app.post("/appointment/:userId/salonService", userCtrl.postAppointment);
+app.delete("/appointment/delete/:userId/:id", async (req, res, next) => {
+  const { userId, id } = req.params;
+
+  await Appointment.destroy({
+    where: {
+      userId: userId,
+      id: id,
+    },
+  });
+  res.send("delete");
+});
 // ERROR MiddleWare
 app.use(errorHandler);
 

@@ -86,9 +86,9 @@ class SalonService {
         "No dublicte salon can formed"
       );
 
-    for (let f = 0; f < files?.length; f++) {
-      var upload_data = await SalonService.uploadFile(files[f]);
-    }
+    // for (let f = 0; f < files?.length; f++) {
+    //   var upload_data = await SalonService.uploadFile(files[f]);
+    // }
 
     await User.update(
       { ...userDeatil, role: "SHOPKEEPER" },
@@ -96,7 +96,7 @@ class SalonService {
     );
 
     const salon = await Salon.create({
-      imageId: upload_data.id,
+      // imageId: upload_data.id,
       ...{
         name,
         address,

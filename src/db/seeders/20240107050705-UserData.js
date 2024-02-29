@@ -21,7 +21,7 @@ module.exports = {
           fullName: "Admin",
           email: "admin@salon.com",
           password: "admin@123",
-          role: "admin",
+          role: "ADMIN",
           createdAt: "8/8/2023",
           updatedAt: "4/12/2023",
         },
