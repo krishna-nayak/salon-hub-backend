@@ -1,6 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
+const Imagestore = require("./imagestore");
 const salonservice = require("./salonservice");
+
 module.exports = (sequelize, DataTypes) => {
   class Salon extends Model {
     /**
@@ -8,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ SalonService, Service, User }) {
+    static associate({ SalonService, Service, User, Imagestore }) {
       // define association here
       this.belongsToMany(Service, {
         through: SalonService,
@@ -19,6 +21,9 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(User, {
         foreignKey: "userId", // This should match the foreign key in the User table
         onDelete: "CASCADE",
+      });
+      this.hasMany(Imagestore, {
+        foreignKey: "salonId",
       });
     }
   }

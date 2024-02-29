@@ -3,9 +3,31 @@ var db = require("../db/models");
 var Salon = db.Salon;
 var Service = db.Service;
 var User = db.User;
-
+var Imagestore = db.Imagestore;
 const { where } = require("sequelize");
 const SalonService = require("../services/SalonService");
+
+//this code is add file nae to Image
+/*const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../uploads");
+
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
+});
+*/
 
 //GET
 var getSalons = async (req, res, next) => {
@@ -153,7 +175,31 @@ var getsalonService = async (req, res) => {
     return res.json({ msg: err.msg });
   }
 };
+//const uploaded = multer({ storage: storage });
 
+var uploadImage = async (req, res) => {
+  try {
+    const { salonId } = req.params;
+    const files = req.files;
+
+    if (!files || files.length === 0) {
+      throw new Error("No files uploaded");
+    }
+
+    const images = [];
+
+    for (const file of files) {
+      const imageData = file.buffer;
+      const image = await Imagestore.create({ salonId, image: imageData });
+      images.push(image);
+    }
+
+    return res.status(201).json({ images });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Failed to upload images" });
+  }
+};
 module.exports = {
   getSalons,
   getSalon,
@@ -164,4 +210,6 @@ module.exports = {
   postService,
   postBulkService,
   getsalonService,
+  uploadImage,
+  //uploaded: uploaded,
 };
