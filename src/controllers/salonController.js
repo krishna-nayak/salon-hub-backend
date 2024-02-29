@@ -180,22 +180,15 @@ var getsalonService = async (req, res) => {
 var uploadImage = async (req, res, next) => {
   try {
     const { salonId } = req.params;
-    const files = req.files;
+    const { files } = req;
+    console.log(files);
+    const images = await SalonService.uploadFile(files, salonId);
 
-    if (!files || files.length === 0) {
-      throw new Error("No files uploaded");
-    }
-
-    const images = [];
-
-    for (const file of files) {
-      const imageData = file.buffer;
-      console.log(imageData);
-      const image = await Imagestore.create({ salonId, image: imageData });
-      images.push(image);
-    }
-
-    return res.status(201).json({ images });
+    return res.status(201).json({ name: "images", images });
+  } catch (err) {
+    next(err);
+  }
+};
   } catch (err) {
     next(err);
   }

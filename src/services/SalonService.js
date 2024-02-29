@@ -2,6 +2,7 @@ var db = require("../db/models");
 var Salon = db.Salon;
 var Service = db.Service;
 var User = db.User;
+var Imagestore = db.Imagestore;
 
 const stream = require("stream");
 const { google } = require("googleapis");
@@ -137,6 +138,24 @@ class SalonService {
       message: "Salon id " + salonId + " data DELETED",
       id: salonId,
     };
+  }
+
+  static async uploadFile(files, salonId) {
+    console.log(files.length);
+    if (!files || files.length === 0) {
+      throw new Error("No files uploaded");
+    }
+
+    const images = [];
+
+    for (const file of files) {
+      const imageData = file.buffer;
+      console.log(imageData);
+      const image = await Imagestore.create({ salonId, image: imageData });
+      images.push(image);
+    }
+
+    return images;
   }
 }
 
