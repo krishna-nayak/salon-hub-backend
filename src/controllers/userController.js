@@ -67,12 +67,35 @@ var getUserAppointment = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const result = await Appointment.findAll({
+    const results = await Appointment.findAll({
       where: { userId },
-      include: [User],
+      include: [User, { model: SalonService, include: [Salon, Service] }],
     });
-    //console.log(result);
-    return res.json(result);
+
+    const send_data = [];
+    for (let i of results) {
+      const obj = Object.assign(
+        {},
+        {
+          username: i?.User.fullName,
+          price: i.SalonService.price,
+          status: i.status,
+          time: i.time,
+          duration: i.duration,
+          notes: i.notes,
+          date: i.date,
+          service_name: i?.SalonService?.Service?.service_type,
+          salon: {
+            name: i?.SalonService?.Salon.name,
+            city: i?.SalonService?.Salon.city,
+            address: i?.SalonService?.Salon.address,
+          },
+        }
+      );
+
+      send_data.push(obj);
+    }
+    return res.json(send_data);
   } catch (err) {
     return res.json({ msg: err.msg });
   }
