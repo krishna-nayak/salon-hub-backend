@@ -63,25 +63,28 @@ var deleteUsers = async (req, res, next) => {
 };
 
 //************************************************Appointment************************************************************ */
-var getAppointment = async (req, res) => {
+var getUserAppointment = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    // const result = await User.findOne({
-    //   where: { userId },
-    //   include: [
-    //     {
-    //       model: SalonService,
-    //       through: Appointment,
-    //       include: [Service, Salon],
-    //     },
-    //   ],
-    // });
     const result = await Appointment.findAll({
       where: { userId },
       include: [User],
     });
     //console.log(result);
+    return res.json(result);
+  } catch (err) {
+    return res.json({ msg: err.msg });
+  }
+};
+
+var getSalonAppointment = async (req, res) => {
+  const { salonId } = req.params;
+
+  try {
+    const result = await Appointment.findAll({
+      include: [{ model: User }, { model: SalonService, where: { salonId } }],
+    });
     return res.json(result);
   } catch (err) {
     return res.json({ msg: err.msg });
@@ -144,7 +147,8 @@ module.exports = {
   postUsers,
   putUsers,
   deleteUsers,
-  getAppointment,
+  getUserAppointment,
+  getSalonAppointment,
   postAppointment,
   loginUsers,
 };
