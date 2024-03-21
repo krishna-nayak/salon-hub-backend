@@ -47,6 +47,10 @@ app.get("/services", serviceCtrl.getServices);
 // app.post("/salon/:salonId/service/:serviceId", serviceCtrl.postService);
 app.post("/salon/:salonId/services", serviceCtrl.postBulkService);
 app.get("/salonService/:salonId", serviceCtrl.getsalonService);
+app.delete(
+  "/salonService/:salonId/delete/:serviceId",
+  serviceCtrl.deleteSalonService
+);
 
 app.get("/user/appointment/:userId", userCtrl.getUserAppointment);
 app.get("/salon/appointment/:salonId", userCtrl.getSalonAppointment);

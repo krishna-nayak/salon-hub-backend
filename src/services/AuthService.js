@@ -2,10 +2,11 @@ const UserError = require("../ErrorHandler/UserError");
 var db = require("../db/models");
 
 var User = db.User;
+var Salon = db.Salon;
 
 class AuthService {
   static async login(email, password) {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email }, include: [Salon] });
     if (!user) {
       const msg = "User not found";
       const extra = "Please check your email address: NO such email exist";

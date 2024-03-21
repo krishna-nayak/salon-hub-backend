@@ -3,6 +3,7 @@ var db = require("../db/models");
 var Salon = db.Salon;
 var Service = db.Service;
 var User = db.User;
+var SalonServiceModel = db.SalonService;
 var Imagestore = db.Imagestore;
 const { where } = require("sequelize");
 const SalonService = require("../services/SalonService");
@@ -163,6 +164,23 @@ var postBulkService = async (req, res, next) => {
   }
 };
 
+var deleteSalonService = async (req, res, next) => {
+  const { serviceId, salonId } = req.params;
+  try {
+    const arr = await SalonServiceModel.destroy({
+      where: {
+        serviceId: serviceId,
+        salonId: salonId,
+      },
+    });
+    console.log(arr);
+    res.status(200).send("delete service " + serviceId + " " + salonId);
+  } catch (err) {
+    // console.log(err);
+    next(err);
+  }
+};
+
 var getsalonService = async (req, res) => {
   const { salonId } = req.params;
   try {
@@ -199,6 +217,7 @@ var getImage = async (req, res, next) => {
     next(err);
   }
 };
+
 module.exports = {
   getSalons,
   getSalon,
@@ -211,5 +230,6 @@ module.exports = {
   getsalonService,
   uploadImage,
   getImage,
+  deleteSalonService,
   //uploaded: uploaded,
 };

@@ -5,6 +5,7 @@ module.exports = {
     database: process.env.DATABASE_DEV,
     host: process.env.PSQL_HOST,
     dialect: "postgres",
+    // logging: (msg) => console.count("help ", typeof msg),
   },
   docker_development: {
     username: process.env.DOCKER_USERNAME,

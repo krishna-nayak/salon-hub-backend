@@ -70,6 +70,7 @@ var getUserAppointment = async (req, res) => {
     const results = await Appointment.findAll({
       where: { userId },
       include: [User, { model: SalonService, include: [Salon, Service] }],
+      order: [["date", "DESC"]],
     });
 
     const send_data = [];
