@@ -114,7 +114,22 @@ var getSalonAppointment = async (req, res) => {
     return res.json({ msg: err.msg });
   }
 };
+const nodemailer = require("nodemailer");
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.CONFIRM_EMAIL,
+    pass: process.env.CONFIRM_PASSWORD, //add  your CONFIRM_EMAIL and CONFIRM_PASSWORD (not password but [app passkey] of EMAIL that u will get after enableing 2 way verification for your EMAIL  ) in env file
+  },
+});
 
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("SMTP server connection error:", error);
+  } else {
+    console.log("SMTP server connection successful");
+  }
+});
 var postAppointment = async (req, res, next) => {
   const { userId } = req.params;
   const { date, status, time, duration, notes, salonServiceIdArr } = req.body;
@@ -123,34 +138,50 @@ var postAppointment = async (req, res, next) => {
     const user = await User.findOne({ where: { userId } });
     if (!user) throw new Error(`User not found`);
 
-    salonServiceIdArr?.map(async (salonServiceId) => {
-      const salonService = await SalonService.findOne({
-        where: { salonServiceId },
-      });
+    await Promise.all(
+      salonServiceIdArr?.map(async (salonServiceId) => {
+        const salonService = await SalonService.findOne({
+          where: { salonServiceId },
+        });
 
-      if (!salonService) return;
-      await Appointment.create({
-        salonServiceId: salonServiceId,
-        userId: userId,
-        date: date,
-        status: "pending",
-        notes,
-        time,
-        duration,
-      });
+        if (!salonService) return;
+        await Appointment.create({
+          salonServiceId: salonServiceId,
+          userId: userId,
+          date: date,
+          status: "pending",
+          notes,
+          time,
+          duration,
+        });
+      })
+    );
+
+    const mailOptions = {
+      from: '"SALON_HUB_BOOKIFY" <process.env.CONFIRM_EMAIL>',
+      to: user.email,
+      subject: "Appointment Confirmation ✅",
+      text: `Your appointment has been confirmed. Date: ${date}, Time: ${time}, Duration: ${duration}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        throw new Error("Error sending email");
+      } else {
+        //console.log(user.email);
+        console.log("Email sent:", info.response);
+      }
     });
 
     const result = await User.findOne({
       where: { userId },
-      // include: [SalonService],
     });
 
     return res.status(201).json(result);
   } catch (err) {
-    // console.log(err);
     console.log(err);
     next(err);
-    // return res.status(500).json({ msg: err.message });
   }
 };
 
