@@ -39,12 +39,20 @@ class UserService {
     return [user, 200];
   }
 
-  static async createUser({ fullName, email, role, password }) {
+  static async createUser({ fullName, email, role, password, gender }) {
+    let imageUrl;
+    if (gender === "male") {
+      imageUrl = `https://avatar.iran.liara.run/public/boy?username=${fullName}`;
+    } else if (gender === "female") {
+      imageUrl = `https://avatar.iran.liara.run/public/girl?username=${fullName}`;
+    } else {
+      imageUrl = `https://avatar.iran.liara.run/username?username=${fullName}`;
+    }
     const [user, created] = await User.findOrCreate({
       where: { email },
       defaults: {
         role: role || "USER",
-        ...{ fullName, email, password },
+        ...{ fullName, email, password, imageUrl, gender },
       },
     });
 

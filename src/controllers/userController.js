@@ -115,6 +115,7 @@ var getSalonAppointment = async (req, res) => {
   }
 };
 const nodemailer = require("nodemailer");
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -130,6 +131,7 @@ transporter.verify((error, success) => {
     console.log("SMTP server connection successful");
   }
 });
+
 var postAppointment = async (req, res, next) => {
   const { userId } = req.params;
   const { date, status, time, duration, notes, salonServiceIdArr } = req.body;
