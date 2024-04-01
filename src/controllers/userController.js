@@ -5,7 +5,7 @@ var SalonService = db.SalonService;
 var Salon = db.Salon;
 var Service = db.Service;
 var Appointment = db.Appointment;
-
+const { v4: uuidv4 } = require("uuid");
 const UserService = require("../services/UserService");
 const UserError = require("../ErrorHandler/UserError");
 const AuthService = require("../services/AuthService");
@@ -158,12 +158,34 @@ var postAppointment = async (req, res, next) => {
         });
       })
     );
-
+    //******************************************************All changes are need to be done here only***************************************************** */
+    const uid = uuidv4();
+    const formattedDate = date.split("-").reverse().join(""); // Format date as YYYYMMDD
+    const formattedTime = time.replace(":", "") + "00"; // Format time as HHmmss
+    const icalEventContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ACME/DesktopCalendar//EN
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:${uuidv4()} // Unique identifier for the event
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "")}Z
+DTSTART:${formattedDate}T${formattedTime}
+DURATION:PT${duration}H
+SUMMARY:Appointment
+DESCRIPTION:${notes}
+END:VEVENT
+END:VCALENDAR`;
+    //*********************************************************************************************************************************** */
     const mailOptions = {
       from: '"SALON_HUB_BOOKIFY" <process.env.CONFIRM_EMAIL>',
       to: user.email,
       subject: "Appointment Confirmation ✅",
       text: `Your appointment has been confirmed. Date: ${date}, Time: ${time}, Duration: ${duration}`,
+      icalEvent: {
+        filename: "invitation.ics",
+        method: "request",
+        content: icalEventContent,
+      },
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
