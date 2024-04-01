@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ Appointment, SalonService, Salon }) {
+    static associate({ Appointment, SalonService, Salon, Review }) {
       // define association here
       this.belongsToMany(SalonService, {
         through: Appointment,
@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId", // This will be the foreign key in the Salon table
         onDelete: "CASCADE",
       });
+
+      this.hasMany(Review, { foreignKey: "userId", onDelete: "cascade" });
     }
     // @Override
     toJSON() {

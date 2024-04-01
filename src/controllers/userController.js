@@ -198,6 +198,7 @@ var loginUsers = async (req, res, next) => {
     next(err);
   }
 };
+
 module.exports = {
   getUsers,
   getUser,

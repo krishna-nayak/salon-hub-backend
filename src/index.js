@@ -7,6 +7,7 @@ require("./db/models");
 var userCtrl = require("./controllers/userController");
 var salonCtrl = require("./controllers/salonController");
 var serviceCtrl = require("./controllers/salonController");
+var reviewCtrt = require("./controllers/reviewController");
 const { sequelize } = require("./db/models");
 
 const serverless = require("serverless-http");
@@ -41,6 +42,12 @@ app.get("/salon", salonCtrl.getSalons);
 app.get("/salon/:salonId", salonCtrl.getSalon);
 app.put("/salon/:salonId", salonCtrl.putSalons);
 app.delete("/salon/:salonId", salonCtrl.deleteSalons);
+
+// REVIEW
+app.post("/reviews/:salonId/:userId", reviewCtrt.writeReview);
+app.get("/reviews/salon/:salonId", reviewCtrt.getAllSaloneReviews);
+app.get("/reviews/users/:userId", reviewCtrt.getAllUserReviews);
+app.get("/reviews/:salonId/:userId", reviewCtrt.getReview);
 
 // GET SALON SERVICE
 app.get("/services", serviceCtrl.getServices);
