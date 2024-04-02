@@ -35,7 +35,7 @@ var getReview = async function (req, res, next) {
     // Find the review for the given user ID and salon ID
     const review = await Review.findOne({ where: { userId, salonId } });
 
-    if (!review) throw new Error(`"Review not found"`);
+    // if (!review) throw new Error(`"Review not found"`);
 
     res.status(200).json(review);
   } catch (error) {
