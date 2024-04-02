@@ -45,7 +45,10 @@ var getAllSaloneReviews = async function (req, res, next) {
   try {
     const { salonId } = req.params;
 
-    const reviews = await Review.findAll({ where: { salonId } });
+    const reviews = await Review.findAll({
+      where: { salonId },
+      include: [{ model: User, attributes: ["fullName", "imageUrl"] }],
+    });
 
     res.status(200).json({ reviews });
   } catch (error) {
