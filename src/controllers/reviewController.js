@@ -31,6 +31,7 @@ var getReview = async function (req, res, next) {
   try {
     const { userId, salonId } = req.params;
 
+    if (userId === "null") res.status(200).json({});
     // Find the review for the given user ID and salon ID
     const review = await Review.findOne({ where: { userId, salonId } });
 
