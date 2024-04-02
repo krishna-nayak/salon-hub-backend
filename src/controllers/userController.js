@@ -1,4 +1,5 @@
 var db = require("../db/models");
+const { parse, format } = require("date-fns");
 
 var User = db.User;
 var SalonService = db.SalonService;
@@ -159,9 +160,18 @@ var postAppointment = async (req, res, next) => {
       })
     );
     //******************************************************All changes are need to be done here only***************************************************** */
-    const uid = uuidv4();
+    // const uid = uuidv4();
     const formattedDate = date.split("-").reverse().join(""); // Format date as YYYYMMDD
-    const formattedTime = time.replace(":", "") + "00"; // Format time as HHmmss
+    const parsedTime = parse(time, "hh:mm aa", new Date());
+    const formattedparsedTime = format(parsedTime, "HH:mm:ss");
+    const formattedTime = formattedparsedTime.replaceAll(":", ""); // Format time as HHmmss
+    console.log(
+      "\nformattedDate: ",
+      formattedDate,
+      "\nformattedTime: ",
+      formattedTime,
+      "\n"
+    );
     const icalEventContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//ACME/DesktopCalendar//EN
@@ -170,7 +180,7 @@ BEGIN:VEVENT
 UID:${uuidv4()} // Unique identifier for the event
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "")}Z
 DTSTART:${formattedDate}T${formattedTime}
-DURATION:PT${duration}H
+DURATION:PT${duration}M
 SUMMARY:Appointment
 DESCRIPTION:${notes}
 END:VEVENT
@@ -193,7 +203,6 @@ END:VCALENDAR`;
         console.error("Error sending email:", error);
         throw new Error("Error sending email");
       } else {
-        //console.log(user.email);
         console.log("Email sent:", info.response);
       }
     });
