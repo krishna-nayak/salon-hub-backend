@@ -61,6 +61,8 @@ module.exports = (sequelize, DataTypes) => {
       duration: {
         type: DataTypes.STRING,
       },
+      name: DataTypes.STRING,
+      gender: DataTypes.STRING,
     },
     {
       sequelize,

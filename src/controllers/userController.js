@@ -80,6 +80,8 @@ var getUserAppointment = async (req, res) => {
         {},
         {
           username: i?.User.fullName,
+          customerName: i?.name,
+          gender: i?.gender,
           price: i.SalonService.price,
           status: i.status,
           time: i.time,
@@ -135,8 +137,18 @@ transporter.verify((error, success) => {
 
 var postAppointment = async (req, res, next) => {
   const { userId } = req.params;
-  const { date, status, time, duration, notes, salonServiceIdArr } = req.body;
+  const {
+    date,
+    status,
+    time,
+    duration,
+    notes,
+    salonServiceIdArr,
+    name,
+    gender,
+  } = req.body;
 
+  console.log(name, gender);
   try {
     const user = await User.findOne({ where: { userId } });
     if (!user) throw new Error(`User not found`);
@@ -156,6 +168,8 @@ var postAppointment = async (req, res, next) => {
           notes,
           time,
           duration,
+          name,
+          gender,
         });
       })
     );
